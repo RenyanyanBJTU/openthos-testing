@@ -1,8 +1,30 @@
 # openthos在qemu上的自动测试
 ##用qemu-system-x86_64测试
-###Live CD模式
+1、首先，确保使用的机器支持虚拟化，输入如下命令,如果出现vmx或者svm等信息说明支持，如果没有信息则可能无法运行安卓镜像。
+```
+egrep '(vmx|svm)' /proc/cpuinfo
+```
+2、安装qemu和qemu-kvm
+```
+sudo apt-get install qemu
+sudo apt-get install qemu-kvm
+```
+3、输入如下命令查询kvm模块是否加载成功，若出现kvm和kvm-intel等说明成功
+```
+lsmod | grep kvm 
+```
+如果没有，则运行如下命令加载模块
+```
+sudo modprobe kvm
+sudo modprobe kvm-intel 
+```
+如果还是不成功，则是机器支持虚拟化但没有开启虚拟化，可以重启机器,在bios里的虚拟化选项里开启。
+<br><br>
+
+###Live CD模式运行安卓镜像
 ```
 qemu-system-x86_64 -enable-kvm -m 4G -cdrom android_x86.iso -vga std -serial stdio
+#notice：镜像的路径和全称要正确。另外分配的内存如果太小会启动不起来镜像,建议至少2G。
 ```
 ###安装模式
 参考[在QEMU上运行](http://www.android-x86.org/documents/qemuhowto)和[在virtualbox上运行](http://www.android-x86.org/documents/virtualboxhowto#Advanced)的官方文档，创建一个磁盘镜像
